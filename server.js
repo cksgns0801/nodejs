@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var mongoose = require('mongoose');//mongoose 모듈 사용
 //몽고DB connection String
 mongoose.connect('mongodb+srv://lioh:damons2020@cluster0-hydoh.mongodb.net/smart_factory');
@@ -42,3 +43,11 @@ module.exports.fsensors = function(findid){
         }
     });
 }
+=======
+http = require('http');
+http.createServer(function (request,response){
+    response.writeHead(200,{'Content-Type':'text-plain'});
+    response.write('hello nodejs');
+    response.end();
+}).listen(8888);
+>>>>>>> a99031bd3ce888134f7237d64b3cdb5f70f4e66f
