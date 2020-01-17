@@ -1,4 +1,5 @@
 var http = require('http');
+var url = require('url')
 var querystring = require('querystring');
 
 var mongoose = require('mongoose');//mongoose 모듈 사용
@@ -29,27 +30,63 @@ var server = http.createServer(function(request,response){
     if(request.method == 'GET')
     {
         console.log('GET');
-        response.writeHead(200,{'Content-Type':'text/html'});
-
-        Sensor.findOne({_id:'5e1fd04431e32a1c04086ea4'}, function(error,sensors){
-            console.log('--- Read one ---');
-            if(error){
-                console.log(error);
-            }else{
-                console.log(sensors.time);
-                
-                response.end('time : '+sensors.time+'<br/>'+' temp : '+sensors.temp);
-            }
-        });
-        /*Sensor.find(function(error, sensors){
-            console.log('--- Read all ---');
-            if(error){
-                console.log(error);
-            }else{
-                console.log(sensors);
-            }
-        })*/
+        
+        var parserUrl = url.parse(request.url);
+        var query = url.parse(request.url,true).query;
+        var resource = parserUrl.pathname;
+        console.log(resource);
+        if(resource=='/time')
+        {
+            response.writeHead(200,{'Content-Type':'text/html'});
+            Sensor.findOne({_id:query.id}, function(error,sensors){
+                console.log('--- Read one ---');
+                if(error){
+                    console.log(error);
+                }else{
+                    console.log(sensors.time);
+                    
+                    response.end('time : '+sensors.time+'find : '+query.id);
+                }
+            });
+        }
+        else if(resource=='/temp')
+        {
+            response.writeHead(200,{'Content-Type':'text/html'});
+            Sensor.findOne({_id:'5e1fd04431e32a1c04086ea4'}, function(error,sensors){
+                console.log('--- Read one ---');
+                if(error){
+                    console.log(error);
+                }else{
+                    console.log(sensors.time);
+                    
+                    response.end('temp :  '+sensors.temp);
+                }
+            });
+        }
+        else if(resource=='/find')
+        {
+            response.writeHead(200,{'Content-Type':'text/html'});
+            Sensor.findOne({_id:query.id}, function(error,sensors){
+                console.log('--- Read one ---');
+                if(error){
+                    console.log(error);
+                }else{
+                    console.log(sensors.time);
+                    
+                    response.end('id : '+ query.id + '<br>' + 
+                                'temp : '+ sensors.temp+ '<br>' +
+                                'humi : '+ sensors.humi+ '<br>' + 
+                                'date : '+ sensors.time);
+                }
+            });
+        }
+        else
+        {
+            response.writeHead(404,{'Content-Type':'text/html'});
+            response.end('404 Page Not Found');
+        }
     }
+        
     else if(request.method == 'POST')
     {
         var postdata= '';
